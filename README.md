@@ -2,7 +2,7 @@
 
 ### Configuración inicial
 
-1. **Clonar el repositorio** (una vez subido a GitHub):
+1. **Clonar el repositorio** 
 ```bash
 git clone <URL_DEL_REPOSITORIO>
 cd Energy_Process
