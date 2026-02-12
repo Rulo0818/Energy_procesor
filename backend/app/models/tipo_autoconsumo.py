@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, CheckConstraint
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -12,3 +12,7 @@ class TipoAutoconsumo(Base):
     activo = Column(Boolean, default=True)
 
     registros_energia = relationship("EnergiaExcedentaria", back_populates="tipo")
+
+    __table_args__ = (
+        CheckConstraint("codigo IN (12, 41, 42, 43, 51)", name="ck_tipos_validos"),
+    )

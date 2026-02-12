@@ -7,7 +7,7 @@ from app.config import settings
 engine = create_engine(
     settings.DATABASE_URL,
     pool_pre_ping=True,
-    echo=settings.ENVIRONMENT == "development",
+    echo=False,  # 
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -15,7 +15,7 @@ Base = declarative_base()
 
 
 def get_db():
-    """Dependencia FastAPI para obtener sesión de BD."""
+    
     db = SessionLocal()
     try:
         yield db

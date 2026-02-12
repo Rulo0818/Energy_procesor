@@ -51,7 +51,7 @@ def _encolar_o_procesar_sync(archivo_id: int, ruta_archivo: str) -> None:
 )
 async def upload_archivo(
     file: UploadFile = File(...),
-    usuario_carga: str | None = None,
+    usuario_id: int = 1,
     db: Session = Depends(get_db),
 ):
     """
@@ -70,16 +70,16 @@ async def upload_archivo(
 
     upload_dir = Path(settings.UPLOAD_DIR)
     upload_dir.mkdir(parents=True, exist_ok=True)
-    ruta_guardado = upload_dir / (file.filename or "sin_nombre.csv")
+    ruta_guardado = upload_dir / (file.filename or "sin_nombre.xml")
     ruta_guardado.write_bytes(contenido)
     ruta_str = str(ruta_guardado)
 
     nuevo_archivo = ArchivoProcesado(
-        nombre_archivo=file.filename or "sin_nombre.csv",
+        usuario_id=usuario_id,
+        nombre_archivo=file.filename or "sin_nombre.xml",
         hash_archivo=hash_archivo,
         estado="pendiente",
         ruta_archivo=ruta_str,
-        usuario_carga=usuario_carga,
     )
     db.add(nuevo_archivo)
     db.commit()

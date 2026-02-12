@@ -142,7 +142,7 @@ export default function Archivos() {
           <p className="text-muted">Cargando…</p>
         ) : archivos.length === 0 ? (
           <p className="empty-state">
-            Aún no hay archivos. <Link to="/carga">Sube el primero</Link>.
+            Aún no hay archivos. <Link to="/carga">Sube uno</Link>.
           </p>
         ) : (
           <div className="table-wrap">

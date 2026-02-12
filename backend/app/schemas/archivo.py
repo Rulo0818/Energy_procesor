@@ -13,6 +13,7 @@ class ArchivoUploadResponse(BaseModel):
 
 class ArchivoStatus(BaseModel):
     id: int
+    usuario_id: int
     nombre_archivo: str
     fecha_carga: datetime
     estado: str

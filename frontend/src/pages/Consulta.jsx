@@ -36,7 +36,7 @@ export default function Consulta() {
           <div className="form-group form-group--flex">
             <input
               type="text"
-              placeholder="CUPS (opcional)"
+              placeholder="CUPS "
               value={cups}
               onChange={(e) => setCups(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && buscar()}

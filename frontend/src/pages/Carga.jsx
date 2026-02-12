@@ -16,7 +16,8 @@ export default function Carga() {
     setLoading(true);
     setMessage({ type: "", text: "" });
     try {
-      const { data } = await uploadArchivo(file, usuario || null);
+      // Usar ID 1 por defecto (usuario sitko) hasta implementar login
+      const { data } = await uploadArchivo(file, 1);
       setMessage({
         type: "success",
         text: `Archivo en cola (ID: ${data.archivo_id}). Estado: ${data.estado}. Puedes ver el estado en Archivos.`,
@@ -35,18 +36,16 @@ export default function Carga() {
     <div className="page">
       <header className="page-header">
         <h1 className="page-title">Subir archivo de peajes</h1>
-        <p className="page-subtitle">
-          CSV con cabecera: cups_cliente, instalacion_gen, tipo_autoconsumo, fechas y arrays de 6 valores
-        </p>
+        <p className="page-subtitle">sube un archivo de peajes para procesarlo</p>
       </header>
 
       <div className="card">
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
-            <label className="form-label">Archivo (CSV / TXT)</label>
+            <label className="form-label">Archivo (CSV / TXT / XML )</label>
             <input
               type="file"
-              accept=".csv,.txt"
+              accept=".csv,.txt,.xml"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               className="form-input form-input--file"
             />

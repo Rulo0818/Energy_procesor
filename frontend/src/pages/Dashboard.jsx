@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getStats, getArchivos } from "../services/api";
+import { getStats, getArchivos, getUsuariosStats, getClientesStats } from "../services/api";
+import DataViewer from "../components/DataViewer";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "—";
@@ -34,6 +35,16 @@ export default function Dashboard() {
     total_registros_energia: 0,
     total_errores: 0,
   });
+  const [usuariosStats, setUsuariosStats] = useState({
+    total: 0,
+    activos: 0,
+    por_rol: {}
+  });
+  const [clientesStats, setClientesStats] = useState({
+    total: 0,
+    activos: 0,
+    por_provincia: {}
+  });
   const [archivos, setArchivos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,15 +52,25 @@ export default function Dashboard() {
     let cancelled = false;
     const load = async () => {
       try {
-        const [sRes, aRes] = await Promise.all([getStats(), getArchivos(10)]);
+        const [sRes, aRes, uRes, cRes] = await Promise.all([
+          getStats(), 
+          getArchivos(10),
+          getUsuariosStats(),
+          getClientesStats()
+        ]);
         if (!cancelled) {
           setStats(sRes.data);
           setArchivos(aRes.data || []);
+          setUsuariosStats(uRes.data);
+          setClientesStats(cRes.data);
         }
-      } catch {
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
         if (!cancelled) {
           setStats({ total_archivos: 0, total_registros_energia: 0, total_errores: 0 });
           setArchivos([]);
+          setUsuariosStats({ total: 0, activos: 0, por_rol: {} });
+          setClientesStats({ total: 0, activos: 0, por_provincia: {} });
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -64,21 +85,35 @@ export default function Dashboard() {
       title: "Archivos procesados",
       value: stats.total_archivos,
       to: "/archivos",
-      icon: "▤",
+      icon: "",
       color: "var(--accent)",
     },
     {
       title: "Registros de energía",
       value: stats.total_registros_energia,
       to: "/consulta",
-      icon: "◇",
+      icon: "",
       color: "var(--success)",
+    },
+    {
+      title: "Usuarios activos",
+      value: usuariosStats.activos,
+      to: "/usuarios",
+      icon: "",
+      color: "#6366f1",
+    },
+    {
+      title: "Clientes registrados",
+      value: clientesStats.total,
+      to: "/clientes",
+      icon: "",
+      color: "#8b5cf6",
     },
     {
       title: "Errores registrados",
       value: stats.total_errores,
       to: "/archivos",
-      icon: "!",
+      icon: "",
       color: "var(--warning)",
     },
   ];
@@ -88,7 +123,7 @@ export default function Dashboard() {
       <header className="page-header">
         <h1 className="page-title">Dashboard</h1>
         <p className="page-subtitle">
-          Resumen del sistema de procesamiento de peajes
+          
         </p>
       </header>
 
@@ -117,12 +152,12 @@ export default function Dashboard() {
             <div className="dashboard-section-header">
               <h2 className="dashboard-section-title">Archivos recientes</h2>
               <Link to="/archivos" className="dashboard-section-link">
-                Ver todos →
+                Ver todos 
               </Link>
             </div>
             {archivos.length === 0 ? (
               <p className="dashboard-empty">
-                Aún no hay archivos. <Link to="/carga">Sube el primero</Link>.
+                Aún no hay archivos. <Link to="/carga">Sube uno</Link>.
               </p>
             ) : (
               <div className="table-wrap">
@@ -168,13 +203,18 @@ export default function Dashboard() {
             <div className="dashboard-actions-grid">
               <Link to="/carga" className="action-card">
                 <span className="action-card-icon">↑</span>
-                <span>Subir archivo de peajes</span>
+                <span>Subir archivos</span>
               </Link>
               <Link to="/consulta" className="action-card">
                 <span className="action-card-icon">◇</span>
-                <span>Consultar por CUPS</span>
+                <span>Consultar de CUPS</span>
               </Link>
             </div>
+          </section>
+
+          <section className="dashboard-section" style={{ marginTop: "2rem" }}>
+            <h2 className="dashboard-section-title">Datos en vivo de la base de datos</h2>
+            <DataViewer />
           </section>
         </>
       )}

@@ -1,4 +1,5 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Layout.css";
 
 const navItems = [
@@ -6,9 +7,19 @@ const navItems = [
   { to: "/carga", label: "Subir archivo", icon: "↑" },
   { to: "/consulta", label: "Consulta energía", icon: "◇" },
   { to: "/archivos", label: "Archivos y errores", icon: "▤" },
+  { to: "/usuarios", label: "Usuarios", icon: "" },
+  { to: "/clientes", label: "Clientes", icon: "" },
 ];
 
 export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="layout">
       <aside className="sidebar">
@@ -39,8 +50,19 @@ export default function Layout() {
             className="sidebar-link"
           >
             <span className="sidebar-link-icon">⎘</span>
-            <span>API Docs</span>
+            <span>Docs</span>
           </a>
+          {user && (
+            <div className="sidebar-user">
+              <div className="user-info">
+                <div className="user-name">{user.nombre}</div>
+                <div className="user-email">{user.email}</div>
+              </div>
+              <button onClick={handleLogout} className="btn-logout" title="Cerrar sesión">
+                logout
+              </button>
+            </div>
+          )}
         </div>
       </aside>
       <main className="main">

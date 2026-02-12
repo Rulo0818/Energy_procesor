@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, CheckConstraint
+from sqlalchemy import Column, Integer, String, DateTime, Text, CheckConstraint, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -9,6 +9,7 @@ class ArchivoProcesado(Base):
     __tablename__ = "archivo_procesado"
 
     id = Column(Integer, primary_key=True, index=True)
+    usuario_id = Column(Integer, ForeignKey("usuario.id", ondelete="RESTRICT"), nullable=False)
     nombre_archivo = Column(String(255), nullable=False)
     hash_archivo = Column(String(64), nullable=False, unique=True)
     fecha_carga = Column(DateTime, nullable=False, server_default=func.now())
@@ -18,8 +19,8 @@ class ArchivoProcesado(Base):
     registros_exitosos = Column(Integer, default=0)
     registros_con_error = Column(Integer, default=0)
     ruta_archivo = Column(Text, nullable=True)
-    usuario_carga = Column(String(100), nullable=True)
 
+    usuario = relationship("Usuario", back_populates="archivos")
     registros_energia = relationship(
         "EnergiaExcedentaria", back_populates="archivo", cascade="all, delete-orphan"
     )

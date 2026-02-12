@@ -3,7 +3,7 @@ import { uploadArchivo } from "../services/api";
 
 export default function FileUpload({ onUploaded }) {
   const [file, setFile] = useState(null);
-  const [usuario, setUsuario] = useState("");
+  const [usuarioId, setUsuarioId] = useState(1);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -16,7 +16,7 @@ export default function FileUpload({ onUploaded }) {
     setLoading(true);
     setMessage({ type: "", text: "" });
     try {
-      const { data } = await uploadArchivo(file, usuario || null);
+      const { data } = await uploadArchivo(file, usuarioId);
       setMessage({
         type: "success",
         text: `Archivo en cola (ID: ${data.archivo_id}). Estado: ${data.estado}`,
@@ -37,15 +37,16 @@ export default function FileUpload({ onUploaded }) {
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="file"
-          accept=".csv,.txt"
+          accept=".xml,.csv,.txt"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           style={styles.input}
         />
         <input
-          type="text"
-          placeholder="Usuario (opcional)"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
+          type="number"
+          placeholder="Usuario ID (por defecto: 1)"
+          value={usuarioId}
+          onChange={(e) => setUsuarioId(parseInt(e.target.value) || 1)}
+          min="1"
           style={styles.input}
         />
         <button type="submit" disabled={loading} style={styles.button}>

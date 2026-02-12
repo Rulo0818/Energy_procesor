@@ -24,9 +24,13 @@ class EnergiaExcedentaria(Base):
         ForeignKey("archivo_procesado.id", ondelete="CASCADE"),
         nullable=False,
     )
+    cliente_id = Column(
+        Integer,
+        ForeignKey("cliente.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
     linea_archivo = Column(Integer, nullable=False)
-    cups_cliente = Column(String(20), nullable=False, index=True)
-    instalacion_gen = Column(String(50), nullable=False)
+    instalacion_gen = Column(String(50), nullable=False, index=True)
     fecha_desde = Column(Date, nullable=False, index=True)
     fecha_hasta = Column(Date, nullable=False, index=True)
     tipo_autoconsumo = Column(
@@ -40,6 +44,7 @@ class EnergiaExcedentaria(Base):
     fecha_creacion = Column(DateTime, nullable=False, server_default=func.now())
 
     archivo = relationship("ArchivoProcesado", back_populates="registros_energia")
+    cliente = relationship("Cliente", back_populates="registros_energia")
     tipo = relationship("TipoAutoconsumo", back_populates="registros_energia")
 
     __table_args__ = (
