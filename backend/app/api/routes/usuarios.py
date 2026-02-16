@@ -21,7 +21,6 @@ def get_usuarios(
     Obtener lista de usuarios con paginación y filtros opcionales
     """
     query = db.query(Usuario)
-    
     if activo is not None:
         query = query.filter(Usuario.activo == activo)
     
